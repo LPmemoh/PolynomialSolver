@@ -1,6 +1,6 @@
 # -------------------------
-# Author: Liam Prsa X01L
-# Purpose: This program
+# Author: Liam Prsa
+# Purpose: This program allows for polynomials to be added, subtracted, multiplied, and divided
 # -------------------------
 
 from fractions import Fraction
@@ -25,7 +25,7 @@ class Polynomial:
 
     def __init__(self, tuples=None):
         """
-        Build from an optional iterable of (coeff, degree) tuples.
+        Build from an optional tuple of (coeff, degree) tuples.
         """
         self._head = None
         self._size = 0
@@ -43,7 +43,7 @@ class Polynomial:
         return self._head is None
 
     def degree(self) -> int:
-        """Return highest degree, or 0 for an empty polynomial (conventional choice here)."""
+        """Return highest degree, or 0 for an empty polynomial"""
         if self._head is None:
             return 0
         return self._head.degree  # list kept in descending order
@@ -140,7 +140,6 @@ class Polynomial:
         if not isinstance(other, Polynomial):
             raise TypeError("Can only add Polynomial to Polynomial.")
 
-        # Merge in O(n+m) because lists are sorted by degree (DESC)
         res = Polynomial()
         a, b = self._head, other._head
 
@@ -182,10 +181,7 @@ class Polynomial:
             a = a.next
         return res
 
-
     # ---------- testing ----------
-
-
 
     @classmethod
     def from_tuples(cls, tuples):
