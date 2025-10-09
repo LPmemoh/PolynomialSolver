@@ -181,7 +181,127 @@ class Polynomial:
             a = a.next
         return res
 
+    # ---------- sign & subtraction ----------
+
+    def __neg__(self):
+        """Unary minus: return -self."""
+        res = Polynomial()
+        node = self._head
+        while node:
+            res._insert_term_invariant(-node.coeff, node.degree)
+            node = node.next
+        return res
+
+    def __sub__(self, other):
+        """p - q == p + (-q)"""
+        if not isinstance(other, Polynomial):
+            raise TypeError("Can only subtract Polynomial from Polynomial.")
+        return self + (-other)
+
+    # ---------- division helpers ----------
+
+    def _leading_term(self):
+        """
+        Return (coeff, degree) of the leading term, or (0, 0) if zero polynomial.
+        Coeff is returned as an int for internal use.
+        """
+        if self._head is None:
+            return 0, 0
+        return self._head.coeff, self._head.degree
+
+    def _mul_monomial(self, coeff, degree):
+        """
+        Return self * (coeff*x^degree). coeff can be int or Fraction.
+        """
+        res = Polynomial()
+        node = self._head
+        while node:
+            # Allow Fraction coefficients during division
+            new_c = (Fraction(node.coeff) if not isinstance(node.coeff, Fraction) else node.coeff) * Fraction(coeff)
+            res._insert_term_invariant(new_c, node.degree + degree)
+            node = node.next
+        return res
+
+    def _as_fraction_poly(self):
+        """
+        Convert all coefficients to Fractions (used by division to stay exact).
+        """
+        res = Polynomial()
+        node = self._head
+        while node:
+            res._insert_term_invariant(Fraction(node.coeff), node.degree)
+            node = node.next
+        return res
+
+    # ---------- division (long division) ----------
+
+    def __divmod__(self, other):
+        """
+        Polynomial long division: returns (quotient, remainder) so that
+        self = other*quotient + remainder, and degree(remainder) < degree(other) or remainder == 0.
+
+        Coefficients in quotient/remainder are Fractions for exactness.
+        """
+        if not isinstance(other, Polynomial):
+            raise TypeError("Can only divide Polynomial by Polynomial.")
+        if other.is_zero():
+            raise ZeroDivisionError("Polynomial division by zero polynomial.")
+
+        # Work in Fractions to keep exact arithmetic.
+        dividend = self._as_fraction_poly()
+        divisor = other._as_fraction_poly()
+
+        q = Polynomial()  # quotient (Fractions)
+        r = Polynomial()  # running remainder (Fractions)
+        # Start with r = dividend
+        node = dividend._head
+        while node:
+            r._insert_term_invariant(node.coeff, node.degree)
+            node = node.next
+
+        # Long division
+        d_lead_c, d_lead_deg = divisor._leading_term()
+        while (not r.is_zero()) and (r.degree() >= d_lead_deg):
+            r_lead_c, r_lead_deg = r._leading_term()
+            # term_to_cancel = (r_lead_c / d_lead_c) * x^(r_lead_deg - d_lead_deg)
+            factor_c = Fraction(r_lead_c) / Fraction(d_lead_c)
+            factor_deg = r_lead_deg - d_lead_deg
+
+            # q += factor
+            q._insert_term_invariant(factor_c, factor_deg)
+            # r -= divisor * factor
+            r = r - divisor._mul_monomial(factor_c, factor_deg)
+
+        # Ensure quotient/remainder keep invariants and Fractions are preserved
+        return q, r
+
+    def __truediv__(self, other):
+        """
+        Exact division: returns quotient if remainder is zero, else raises.
+        """
+        q, r = divmod(self, other)
+        if r.is_zero():
+            return q
+        raise ValueError(
+            "Polynomial division not exact (non-zero remainder). Use divmod(p, q) for quotient and remainder.")
+
     # ---------- testing ----------
+
+    '''
+    Ex. Usage: p = Polynomial.from_tuples([(3,3), (-2,2), (1,0)])   # 3x^3 - 2x^2 + 1
+    q = Polynomial.from_tuples([(1,1), (-1,0)])          # x - 1
+
+    -- Subtraction --
+    print(p - q)          # 3x^3 - 2x^2 - x + 2
+
+    -- Division (long division) --
+    quot, rem = divmod(p, q)
+    print("q:", quot)     # expected: 3x^2 + x - 1  (with Fraction coeffs if needed)
+    print("r:", rem)      # expected: 0
+
+    -- Exact division --
+    print(p / q)          # 3x^2 + x - 1
+    '''
 
     @classmethod
     def from_tuples(cls, tuples):
