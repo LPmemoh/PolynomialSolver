@@ -1,8 +1,8 @@
-Polynomial Class (Linked List Implementation)
+A Python Polynomial Class (Linked List Implementation)
 
 Purpose:
 
-This module implements a Polynomial class using a linked list of terms.
+This program implements a Polynomial class using a linked list of terms.
 It supports the basic algebraic operations on polynomials:
 
 Addition
