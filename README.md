@@ -8,7 +8,7 @@ It supports the basic algebraic operations on polynomials:
 Addition
 Subtraction
 Multiplication
-Division (with quotient & remainder via divmod, or exact division via /)
+Division (with quotient and remainder via divmod, or exact division via /)
 
 Polynomials are kept in descending degree order, with no duplicate terms and no zero coefficients stored.
 This ensures operations are efficient and results are always simplified.
