@@ -35,25 +35,31 @@ divmod(p, q) : Polynomial long division (returns (quotient, remainder))
 
 # Usage Examples:
 
-from polynomial import Polynomial
+- Import and construct polynomials:
+  ```python
+  from polynomial import Polynomial
 
-p = Polynomial.from_tuples([(3, 3), (-2, 2), (1, 0)]
+  p = Polynomial.from_tuples([(3, 3), (-2, 2), (1, 0)])
+  q = Polynomial.from_tuples([(1, 1), (-1, 0)])
 
-q = Polynomial.from_tuples([(1, 1), (-1, 0)])
+  print("p(x) =", p)
+  print("q(x) =", q)
+  ```
 
-print("p(x) =", p)
-print("q(x) =", q)
+- Basic operations:
+  ```python
+  print("p + q =", p + q)
+  print("p - q =", p - q)
+  print("p * q =", p * q)
+  ```
 
-print("p + q =", p + q)
+- Division:
+  ```python
+  # Polynomial long division
+  quot, rem = divmod(p, q)
+  print("quotient:", quot)
+  print("remainder:", rem)
 
-print("p - q =", p - q)
-
-print("p * q =", p * q)
-
-quot, rem = divmod(p, q)
-
-print("quotient:", quot)
-
-print("remainder:", rem)
-
-print("p / q =", p / q)
+  # Exact division (raises if remainder != 0)
+  print("p / q =", p / q)
+  ```
