@@ -57,14 +57,3 @@ print("quotient:", quot)
 print("remainder:", rem)
 
 print("p / q =", p / q)
-
-## Testing and Continuous Integration
-
-Unit tests live under the `tests/` directory and are **not** packaged with or
-executed by the production code. They only run when you explicitly execute the
-test suite (for example with `python -m unittest discover -s tests`) or when
-GitHub Actions triggers the continuous-integration workflow.
-
-The default workflow is configured to run on pull requests or when manually
-dispatched from the Actions tab, keeping CI activity isolated from the `main`
-branch while still validating changes before they are merged.
