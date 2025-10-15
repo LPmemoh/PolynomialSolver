@@ -37,7 +37,7 @@ divmod(p, q) : Polynomial long division (returns (quotient, remainder))
 
 - Import and construct polynomials:
   ```python
-  from polynomial import Polynomial
+  from PolynomialSolver import Polynomial
 
   p = Polynomial.from_tuples([(3, 3), (-2, 2), (1, 0)])
   q = Polynomial.from_tuples([(1, 1), (-1, 0)])
